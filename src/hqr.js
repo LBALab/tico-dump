@@ -68,3 +68,36 @@ export const decompressHQR = (buffer, entry) => {
     }
     return tgt_buffer;    
 };
+
+
+export const loadBIG = (buffer, size) => {
+    const entries = [];
+    const offsets = [];
+    const header = new DataView(buffer);
+
+     // skip correct HQR format num entries bytes missing for scenes
+    let offset = 0;
+    let numEntries = 0;
+
+    while (true) {
+        const dataOffset = header.getUint32(offset, true);
+        if (dataOffset >= size) {
+            break;
+        }
+        offset += 4;
+        numEntries++;
+        offsets.push(dataOffset);
+    }
+
+    for (let i = 0; i < numEntries; i += 1) {
+        const dataSize = (i < numEntries - 1) ? offsets[i + 1] - offsets[i] : size - offsets[i];
+        const entry = new DataView(buffer, offsets[i], dataSize);
+        const e = {
+            offset: offsets[i],
+            data: entry.buffer.slice(offsets[i], offsets[i] + dataSize),
+        };
+        entries.push(e);
+    }
+
+    return entries;
+};

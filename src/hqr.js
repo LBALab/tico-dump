@@ -70,7 +70,7 @@ export const decompressHQR = (buffer, entry) => {
 };
 
 
-export const loadBIG = (buffer, size) => {
+export const loadBIG = (buffer, size, isHQR = false) => {
     const entries = [];
     const offsets = [];
     const header = new DataView(buffer);
@@ -78,6 +78,7 @@ export const loadBIG = (buffer, size) => {
      // skip correct HQR format num entries bytes missing for scenes
     let offset = 0;
     let numEntries = 0;
+    let offsetPadding = isHQR ? 10 : 0;
 
     while (true) {
         const dataOffset = header.getUint32(offset, true);
@@ -93,8 +94,8 @@ export const loadBIG = (buffer, size) => {
         const dataSize = (i < numEntries - 1) ? offsets[i + 1] - offsets[i] : size - offsets[i];
         const entry = new DataView(buffer, offsets[i], dataSize);
         const e = {
-            offset: offsets[i],
-            data: entry.buffer.slice(offsets[i], offsets[i] + dataSize),
+            offset: offsets[i] + offsetPadding,
+            data: entry.buffer.slice(offsets[i] + offsetPadding, offsets[i] + dataSize),
         };
         entries.push(e);
     }

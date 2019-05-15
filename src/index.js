@@ -33,9 +33,21 @@ const dumpHQR = (group, filepath, name, stage) => {
         fs.writeFileSync(path.join(dumppathentry, `${name}_${e}.raw`), Buffer.from(data));
 
         if (stage !== 8 && BIG_FILES.includes(e) ||
-            stage === 8 && BIG_FILES_STAGE8.includes(e) ||
-            stage === 'RESSOURC' && BIG_FILES_RESSOURC.includes(e)) {
+            stage === 8 && BIG_FILES_STAGE8.includes(e)) {
             const bigEntries = loadBIG(data, entry.originalSize);
+            for (let b = 0; b < bigEntries.length; b += 1) {
+                const bigEntry = bigEntries[b];
+                const dumppathentrybig = path.join(dumppathentry, `${name}_${e}_BIG`);
+                if (!fs.existsSync(dumppathentrybig)){
+                    fs.mkdirSync(dumppathentrybig, { recursive: true });
+                }
+                const ext = (e === 4) ? 'wav' : 'raw';
+                fs.writeFileSync(path.join(dumppathentrybig, `${name}_${e}_BIG_${b}.${ext}`), Buffer.from(bigEntry.data));
+            }
+        }
+
+        if (stage === 'RESSOURC' && BIG_FILES_RESSOURC.includes(e)) {
+            const bigEntries = loadBIG(data, entry.originalSize, true);
             for (let b = 0; b < bigEntries.length; b += 1) {
                 const bigEntry = bigEntries[b];
                 const dumppathentrybig = path.join(dumppathentry, `${name}_${e}_BIG`);

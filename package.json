@@ -12,11 +12,10 @@
     "license": "MIT",
     "dependencies": {},
     "devDependencies": {
-        "@babel/cli": "7.2.3",
-        "@babel/core": "7.3.4",
-        "@babel/node": "7.2.2",
-        "@babel/preset-env": "7.3.4",
-        "mocha": "^6.1.4",
-        "nodemon": "1.18.10"
+        "@babel/cli": "^7.13.16",
+        "@babel/core": "^7.13.16",
+        "@babel/node": "^7.13.13",
+        "@babel/preset-env": "^7.13.15",
+        "nodemon": "^2.0.7"
     }
 }
